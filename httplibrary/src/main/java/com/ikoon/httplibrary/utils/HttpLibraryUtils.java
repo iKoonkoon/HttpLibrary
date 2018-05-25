@@ -6,7 +6,9 @@ import android.net.NetworkInfo;
 
 /**
  * 方法工具类
- * Created by WZG on 2016/10/31.
+ *
+ * @author MrKong
+ * @date 2016/10/31
  */
 
 public class HttpLibraryUtils
