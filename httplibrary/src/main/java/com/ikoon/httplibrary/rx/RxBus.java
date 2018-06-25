@@ -53,7 +53,7 @@ public class RxBus
         observable.observeOn(AndroidSchedulers.mainThread()).subscribe(consumer, new Consumer<Throwable>()
         {
             @Override
-            public void accept(Throwable throwable) throws Exception
+            public void accept(Throwable throwable)
             {
                 throwable.printStackTrace();
             }
@@ -81,7 +81,6 @@ public class RxBus
         
         Subject<T> subject = PublishSubject.create();
         subjectList.add(subject);
-        // LogUtil.log("register" + tag + " size:" + subjectList.size());
         return subject;
     }
     

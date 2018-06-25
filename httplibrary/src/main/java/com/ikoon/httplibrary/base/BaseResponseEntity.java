@@ -1,84 +1,54 @@
 package com.ikoon.httplibrary.base;
 
 /**
- *
- *
  * @author MrKong
  * @date 18/4/21
+ * @Description 统一实体类
  */
 
 public class BaseResponseEntity<T>
 {
-    
     /**
-     * code : 1
-     * error : null
-     * msg : 登录成功
-     * detail : {}
-     * retain : {}
+     *  {
+     *      code:0,
+     *      msg:"",
+     *      obj:{
+     *
+     *      }
+     *  }
      */
     
-    private int code;
-    private Object error;
-    private String msg;
-    private T detail;
-    private RetainBean retain;
+    private int Code;
+    private String Message;
+    private T Data;
     
     public int getCode()
     {
-        return code;
+        return Code;
     }
     
     public void setCode(int code)
     {
-        this.code = code;
+        Code = code;
     }
     
-    public Object getError()
+    public String getMessage()
     {
-        return error;
+        return Message;
     }
     
-    public void setError(Object error)
+    public void setMessage(String message)
     {
-        this.error = error;
+        Message = message;
     }
     
-    public String getMsg()
+    public T getData()
     {
-        return msg;
+        return Data;
     }
     
-    public void setMsg(String msg)
+    public void setData(T data)
     {
-        this.msg = msg;
+        Data = data;
     }
-    
-    public T getDetail()
-    {
-        return detail;
-    }
-    
-    public DetailBean setDetail(T detail)
-    {
-        this.detail = detail;
-        
-        return null;
-    }
-    
-    public RetainBean getRetain()
-    {
-        return retain;
-    }
-    
-    public void setRetain(RetainBean retain)
-    {
-        this.retain = retain;
-    }
-    
-    public static class DetailBean
-    {}
-    
-    public static class RetainBean
-    {}
 }

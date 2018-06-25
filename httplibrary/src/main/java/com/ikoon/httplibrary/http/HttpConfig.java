@@ -7,28 +7,24 @@ package com.ikoon.httplibrary.http;
  * @date 2017/9/12
  */
 
-public class HttpSetting
+public class HttpConfig
 {
-    /**
-     * token
-     */
-    private String baseToken = "";
-    /**
-     * session
-     */
-    private String baseSession = "";
     /**
      * 基础url
      */
     private String baseUrl = "";
     /**
+     * 基础url
+     */
+    private String Url = "";
+    /**
      * 缓存url-可手动设置
      */
     private String cacheUrl;
     /**
-     * 连接超时时长-默认6秒
+     * 连接超时时长-默认15秒
      */
-    private int connectionTime = 6;
+    private int connectionTime = 15;
     /**
      * 获取资源超时时长-默认15秒
      */
@@ -55,26 +51,6 @@ public class HttpSetting
     private long retryIncreaseDelay = 100;
     
     
-    public String getBaseToken()
-    {
-        return baseToken;
-    }
-    
-    public void setBaseToken(String baseToken)
-    {
-        this.baseToken = baseToken;
-    }
-    
-    public String getBaseSession()
-    {
-        return baseSession;
-    }
-    
-    public void setBaseSession(String baseSession)
-    {
-        this.baseSession = baseSession;
-    }
-    
     public String getBaseUrl()
     {
         return baseUrl;
@@ -83,6 +59,16 @@ public class HttpSetting
     public void setBaseUrl(String baseUrl)
     {
         this.baseUrl = baseUrl;
+    }
+    
+    public String getUrl()
+    {
+        return Url;
+    }
+    
+    public void setUrl(String url)
+    {
+        Url = url;
     }
     
     public String getCacheUrl()

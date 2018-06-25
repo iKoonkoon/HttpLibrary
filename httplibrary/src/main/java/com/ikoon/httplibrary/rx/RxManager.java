@@ -10,6 +10,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 
+/**
+ * @author MrKong
+ */
 public class RxManager
 {
     public RxBus mRxBus = RxBus.getInstance();

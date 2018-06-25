@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/HttpGitHub.iml" filepath="$PROJECT_DIR$/HttpGitHub.iml" />
+      <module fileurl="file://C:\Develop\AndroidStudioProjects\httplibrary\HttpGitHub.iml" filepath="C:\Develop\AndroidStudioProjects\httplibrary\HttpGitHub.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/httplibrary/httplibrary.iml" filepath="$PROJECT_DIR$/httplibrary/httplibrary.iml" />
+      <module fileurl="file://C:\Develop\AndroidStudioProjects\httplibrary\app\app.iml" filepath="C:\Develop\AndroidStudioProjects\httplibrary\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/httplibrary.iml" filepath="$PROJECT_DIR$/httplibrary.iml" />
+      <module fileurl="file://C:\Develop\AndroidStudioProjects\httplibrary\httplibrary\httplibrary.iml" filepath="C:\Develop\AndroidStudioProjects\httplibrary\httplibrary\httplibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/httplibrary/httplibrary-httplibrary.iml" filepath="$PROJECT_DIR$/httplibrary/httplibrary-httplibrary.iml" />
     </modules>
   </component>
 </project>

@@ -19,6 +19,18 @@ public abstract class BaseObserver<T> implements Observer<T>
     
     protected RxManager rxManager;
     
+    /**
+     * 管理网络请求
+     *
+     * 防止当Activity销毁时网络还在请求导致空指针异常
+     *
+     * @param rxManager
+     */
+    public BaseObserver(RxManager rxManager)
+    {
+        this.rxManager = rxManager;
+    }
+    
     @Override
     public void onSubscribe(Disposable d)
     {

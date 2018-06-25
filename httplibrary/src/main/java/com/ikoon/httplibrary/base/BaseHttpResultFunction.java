@@ -8,10 +8,9 @@ import io.reactivex.functions.Function;
 import static com.ikoon.httplibrary.config.Constants.HTTP_SUCCESS;
 
 /**
- * 返回结果统一处理类
- *
  * @author MrKong
  * @date 18/4/21
+ * @Description 返回结果统一处理类
  */
 
 public class BaseHttpResultFunction<T> implements Function<BaseResponseEntity<T>, T>
@@ -23,11 +22,11 @@ public class BaseHttpResultFunction<T> implements Function<BaseResponseEntity<T>
         if (baseResponseEntity.getCode() == HTTP_SUCCESS)
         {
             // 请求成功 返回数据
-            return baseResponseEntity.getDetail();
+            return baseResponseEntity.getData();
         } else
         {
             // 请求失败 抛异常
-            throw new ServerException(baseResponseEntity.getCode(), baseResponseEntity.getMsg());
+            throw new ServerException(baseResponseEntity.getCode(), baseResponseEntity.getMessage());
         }
     }
 }

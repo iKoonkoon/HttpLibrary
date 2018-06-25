@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.ikoon.http.api.HttpInitialize;
+
 public class BaseApplication  extends MultiDexApplication
 {
     
@@ -19,8 +21,8 @@ public class BaseApplication  extends MultiDexApplication
         super.onCreate();
         baseApplication = this;
         
-        // 初始化App
-//        AppUtils.init(getAppContext());
+        // 初始化 Http
+        HttpInitialize.getInstance().initialize();
     }
     
     public static void init(){

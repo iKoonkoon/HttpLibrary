@@ -54,55 +54,58 @@ public final class HttpLoggingInterceptor implements Interceptor
         /**
          * No logs.
          */
-        NONE, /**
-     * Logs request and response lines.
-     * <p>
-     * <p>Example:
-     * <pre>{@code
-     * --> POST /greeting http/1.1 (3-byte body)
-     *
-     * <-- 200 OK (22ms, 6-byte body)
-     * }</pre>
-     */
-    BASIC, /**
-     * Logs request and response lines and their respective headers.
-     * <p>
-     * <p>Example:
-     * <pre>{@code
-     * --> POST /greeting http/1.1
-     * Host: example.com
-     * Content-Type: plain/text
-     * Content-Length: 3
-     * --> END POST
-     *
-     * <-- 200 OK (22ms)
-     * Content-Type: plain/text
-     * Content-Length: 6
-     * <-- END HTTP
-     * }</pre>
-     */
-    HEADERS, /**
-     * Logs request and response lines and their respective headers and bodies (if present).
-     * <p>
-     * <p>Example:
-     * <pre>{@code
-     * --> POST /greeting http/1.1
-     * Host: example.com
-     * Content-Type: plain/text
-     * Content-Length: 3
-     *
-     * Hi?
-     * --> END POST
-     *
-     * <-- 200 OK (22ms)
-     * Content-Type: plain/text
-     * Content-Length: 6
-     *
-     * Hello!
-     * <-- END HTTP
-     * }</pre>
-     */
-    BODY
+        NONE,
+        /**
+         * Logs request and response lines.
+         * <p>
+         * <p>Example:
+         * <pre>{@code
+         * --> POST /greeting http/1.1 (3-byte body)
+         *
+         * <-- 200 OK (22ms, 6-byte body)
+         * }</pre>
+         */
+        BASIC,
+        /**
+         * Logs request and response lines and their respective headers.
+         * <p>
+         * <p>Example:
+         * <pre>{@code
+         * --> POST /greeting http/1.1
+         * Host: example.com
+         * Content-Type: plain/text
+         * Content-Length: 3
+         * --> END POST
+         *
+         * <-- 200 OK (22ms)
+         * Content-Type: plain/text
+         * Content-Length: 6
+         * <-- END HTTP
+         * }</pre>
+         */
+        HEADERS,
+         /**
+         * Logs request and response lines and their respective headers and bodies (if present).
+         * <p>
+         * <p>Example:
+         * <pre>{@code
+         * --> POST /greeting http/1.1
+         * Host: example.com
+         * Content-Type: plain/text
+         * Content-Length: 3
+         *
+         * Hi?
+         * --> END POST
+         *
+         * <-- 200 OK (22ms)
+         * Content-Type: plain/text
+         * Content-Length: 6
+         *
+         * Hello!
+         * <-- END HTTP
+         * }</pre>
+         */
+        BODY
     }
     
     public interface Logger
@@ -261,7 +264,8 @@ public final class HttpLoggingInterceptor implements Interceptor
         }
         long contentLength = responseBody.contentLength();
         String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
-        logger.log("<-- " + response.code() + ' ' + response.message() + ' ' + response.request().url() + " (" + tookMs + "ms" + (!logHeaders ? ", " + bodySize + " body" : "") + ')');
+        logger.log("<-- " + response.code() + ' ' + response.message() + ' ' + response.request()
+                                                                                       .url() + " (" + tookMs + "ms" + (!logHeaders ? ", " + bodySize + " body" : "") + ')');
         
         if (logHeaders)
         {

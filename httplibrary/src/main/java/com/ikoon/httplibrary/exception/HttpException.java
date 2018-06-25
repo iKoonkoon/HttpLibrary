@@ -19,14 +19,16 @@ import javax.net.ssl.SSLHandshakeException;
 
 
 /**
- * Created by MrKong on 18/4/21.
+ *
+ * @author MrKong
+ * @date 18/4/21
  */
 
 public class HttpException
 {
     private static final String HttpException_MSG = "网络错误";
     private static final String ConnectException_MSG = "连接失败";
-    private static final String JSONException_MSG = "fastjeson解析失败";
+    private static final String JSONException_MSG = "json解析失败";
     private static final String UnknownHostException_MSG = "无法解析该域名";
     
     public static ApiException handlerException(Throwable throwable)

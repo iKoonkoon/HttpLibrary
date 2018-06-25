@@ -6,7 +6,6 @@ import android.net.Uri;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ikoon.httplibrary.BuildConfig;
-import com.ikoon.httplibrary.base.BaseApi;
 import com.ikoon.httplibrary.utils.DateDeserializer;
 
 import java.io.File;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
 import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -41,19 +39,36 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HttpManager
 {
-    // 后台服务器地址
-    private static String HOST_API = "http://139.224.42.154:38080";
-    private static String SNAP_SHOT_API = "http://219.140.62.214:8088";
-    
-    private static final int DEFAULT_CONNECT_TIMEOUT = 6;
-    private static final int DEFAULT_READ_TIMEOUT = 15;
+    /**
+     * 基础url
+     */
+    private static String baseUrl = "";
+    /**
+     * 备用url
+     */
+    private static String snapShotUrl = "";
+    /**
+     * 备用url
+     */
+    private static String standbyUrl = "";
+    /**
+     * 连接超时时长-默认15秒
+     */
+    private static int connectionTime = 15;
+    /**
+     * 获取资源超时时长-默认15秒
+     */
+    private static int writeTime = 15;
+    /**
+     * 存储资源超时时长-默认15秒
+     */
+    private static int readTime = 15;
     
     private static HttpManager instance;
     private OkHttpClient okHttpClient;
-    
     private Gson gson;
-    
     private Object domainService;
+    private Object domainServiceStandby;
     private Object cacheDomainService;
     private Object snapShotService;
     private OkHttpClient okHttpCacheClient;
@@ -73,16 +88,36 @@ public class HttpManager
         return instance;
     }
     
-    public static void setBaseUrl(String baseUrl, String snapShotUrl)
+    /**
+     * 设置接口访问地址
+     *
+     * @param mBaseurl
+     * @param mStandbyUrl
+     * @param mSnapShotUrl
+     */
+    public static void setUrl(String mBaseurl, String mStandbyUrl, String mSnapShotUrl)
     {
-        
-        
-        HOST_API = baseUrl;
-        SNAP_SHOT_API = snapShotUrl;
+        baseUrl = mBaseurl;
+        standbyUrl = mStandbyUrl;
+        snapShotUrl = mSnapShotUrl;
     }
     
     /**
-     * 初始化
+     * 设置连接时间
+     *
+     * @param mConnectionTime
+     * @param mReadTime
+     * @param mWriteTime
+     */
+    public static void setConnectionTime(int mConnectionTime, int mReadTime, int mWriteTime)
+    {
+        connectionTime = mConnectionTime;
+        readTime = mReadTime;
+        writeTime = mWriteTime;
+    }
+    
+    /**
+     * 初始化 Http
      *
      * @param httpParamsInterceptor
      * @param httpCacheInterceptor
@@ -90,16 +125,14 @@ public class HttpManager
      */
     public void initialize(Interceptor httpParamsInterceptor, Interceptor httpCacheInterceptor, File cacheDir)
     {
-        // 初始化 http参数
-        HttpSetting httpSetting = new HttpSetting();
         // 初始化 Json转化器
         gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateDeserializer()).create();
         // 初始化 日志打印拦截器
         HttpLoggingInterceptor httpLoggingInterceptor = initHttpLoggingInterceptor();
         // 初始化 okHttp
-        okHttpClient = initOkHttpClient(httpSetting.getConnectionTime(), httpSetting.getReadTime(), httpParamsInterceptor, httpLoggingInterceptor);
+        okHttpClient = initOkHttpClient(connectionTime, readTime, httpParamsInterceptor, httpLoggingInterceptor);
         // 初始化 OKHttpCache
-        okHttpCacheClient = initOkHttpCacheClient(httpSetting.getConnectionTime(), httpSetting.getReadTime(), cacheDir, httpParamsInterceptor, httpLoggingInterceptor, httpCacheInterceptor);
+        okHttpCacheClient = initOkHttpCacheClient(connectionTime, connectionTime, cacheDir, httpParamsInterceptor, httpLoggingInterceptor, httpCacheInterceptor);
     }
     
     /**
@@ -107,7 +140,7 @@ public class HttpManager
      *
      * @return
      */
-    private HttpLoggingInterceptor initHttpLoggingInterceptor()
+    private static HttpLoggingInterceptor initHttpLoggingInterceptor()
     {
         // 新建日志拦截器
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -126,12 +159,14 @@ public class HttpManager
      * @param httpLoggingInterceptor 日志拦截器
      * @return
      */
-    private OkHttpClient initOkHttpClient(int connectTime, int readTime, Interceptor httpParamsInterceptor, Interceptor httpLoggingInterceptor)
+    private static OkHttpClient initOkHttpClient(int connectTime, int readTime, Interceptor httpParamsInterceptor, Interceptor httpLoggingInterceptor)
     {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(connectTime, TimeUnit.SECONDS);
         builder.readTimeout(readTime, TimeUnit.SECONDS);
+        builder.writeTimeout(writeTime, TimeUnit.SECONDS);
         builder.addInterceptor(httpParamsInterceptor);
+        builder.retryOnConnectionFailure(true);
         if (BuildConfig.DEBUG)
         {
             builder.addInterceptor(httpLoggingInterceptor);
@@ -149,7 +184,7 @@ public class HttpManager
      * @param httpCacheInterceptor   缓存拦截器
      * @return
      */
-    private OkHttpClient initOkHttpCacheClient(int connectTime, int readTime, File cacheDir, Interceptor httpParamsInterceptor, Interceptor httpLoggingInterceptor, Interceptor httpCacheInterceptor)
+    private static OkHttpClient initOkHttpCacheClient(int connectTime, int readTime, File cacheDir, Interceptor httpParamsInterceptor, Interceptor httpLoggingInterceptor, Interceptor httpCacheInterceptor)
     {
         File cacheFile = new File(cacheDir, "okhttp_cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100);
@@ -214,9 +249,27 @@ public class HttpManager
     {
         if (getInstance().domainService == null)
         {
-            getInstance().domainService = getRetrofit(HOST_API).create(service);
+            getInstance().domainService = getRetrofit(baseUrl).create(service);
         }
         return (T) getInstance().domainService;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public synchronized static <T> T getDomainService(Class<T> service, String url)
+    {
+        getInstance().domainServiceStandby = getRetrofit(url).create(service);
+        
+        return (T) getInstance().domainServiceStandby;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public synchronized static <T> T getDomainServiceStandby(Class<T> service)
+    {
+        if (getInstance().domainServiceStandby == null)
+        {
+            getInstance().domainServiceStandby = getRetrofit(standbyUrl).create(service);
+        }
+        return (T) getInstance().domainServiceStandby;
     }
     
     @SuppressWarnings("unchecked")
@@ -224,8 +277,17 @@ public class HttpManager
     {
         if (getInstance().cacheDomainService == null)
         {
-            getInstance().cacheDomainService = getCacheRetrofit(HOST_API).create(service);
+            getInstance().cacheDomainService = getCacheRetrofit(baseUrl).create(service);
         }
+        return (T) getInstance().cacheDomainService;
+    }
+    
+    
+    @SuppressWarnings("unchecked")
+    public synchronized static <T> T getCacheDomainService(Class<T> service, String url)
+    {
+        getInstance().cacheDomainService = getCacheRetrofit(url).create(service);
+        
         return (T) getInstance().cacheDomainService;
     }
     
@@ -234,7 +296,7 @@ public class HttpManager
     {
         if (getInstance().snapShotService == null)
         {
-            getInstance().snapShotService = getRetrofit(SNAP_SHOT_API).create(service);
+            getInstance().snapShotService = getRetrofit(snapShotUrl).create(service);
         }
         return (T) getInstance().snapShotService;
     }
